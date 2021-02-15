@@ -26,7 +26,7 @@ void main(void){
     struct Game *pt = &game;
 
     SetBoard(pt);
-    PrintBoard(&game);
+    PrintBoard(pt);
 
     while(1){
         while(1){
@@ -79,16 +79,16 @@ void main(void){
 
 void SetBoard(struct Game *p){
 
-    for (int j=1; j<8; j=j+2){
+    for (int j=0; j<8; j=j+2){
         p->board[0][j] = 1;
         p->board[2][j] = 1;
-        p->board[1][j-1] = 1;
+        p->board[1][j+1] = 1;
     }
 
     for (int j=0; j<8; j=j+2){
-        p->board[5][j] = 2;
-        p->board[7][j] = 2;
-        p->board[6][j+1] = 2;
+        p->board[5][j+1] = 2;
+        p->board[7][j+1] = 2;
+        p->board[6][j] = 2;
     }
 
     p->turn = 1;
