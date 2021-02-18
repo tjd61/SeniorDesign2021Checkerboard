@@ -4,7 +4,7 @@
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
 
-//need to add multiple jumping functionality------fill in CheckMultipleJumps()
+//multiple jumps should be done now
 //need to add king functionality and king rule checking
 
 struct Game{
@@ -180,6 +180,9 @@ void CheckJump(struct Game *p){
 
         p->xj = sign_x + p->x0;
         p->yj = sign_y + p->y0;
+
+        if(p->board[p->yj][p->xj] == 0)
+            p->jump = 0;
     }
 
 }
@@ -197,7 +200,8 @@ void CheckMultipleJumps(struct Game *p){
                     printf("\nAnother jump available1\n");
                     SwitchTurn(p);
                     p->must_jump =1;
-                }else{ //no consecutive jump available
+                }else{ //no consecutive jump available+
+                    printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
@@ -208,10 +212,12 @@ void CheckMultipleJumps(struct Game *p){
                     SwitchTurn(p);
                     p->must_jump =1;
                 }else{ //no consecutive jump available
+                    printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
             }else{ //no nearby opposite peices
+                printf("\nNo more jumps available\n");
                 p->must_jump = 0;
                 p->jump = 0;
             }
@@ -223,6 +229,7 @@ void CheckMultipleJumps(struct Game *p){
                     SwitchTurn(p);
                     p->must_jump =1;
                 }else{ //no consecutive jump over this piece
+                    printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
@@ -233,26 +240,17 @@ void CheckMultipleJumps(struct Game *p){
                     SwitchTurn(p);
                     p->must_jump =1;
                 }else{ //no consecutive jump over this piece
+                    printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
                 
             }else{ //no nearby opposite peices
+                printf("\nNo more jumps available\n");
                 p->must_jump = 0;
                 p->jump = 0;
             }
         }
-
-        //check if another jump available
-      /*  if(another jump available){
-            p.must_jump = 1;
-            Switchturn(p);            
-        }else{
-            p.must_jump = 0;
-            p.jump = 0;
-        }*/
-
-
     }
 
 }
