@@ -45,7 +45,7 @@ void main(void){
 
                     //this is for testing only
                     if(pt->x0 == 8){
-                        int c[8][8] = {{0,0,1,0,1,0,0,0},{0,1,0,0,0,2,0,0},{0,0,0,0,0,0,0,0},{0,2,0,1,0,2,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,2,0,0},{0,0,1,0,2,0,0,0},{0,2,0,0,0,0,0,0}};
+                        int c[8][8] = {{0,0,1,0,1,0,0,0},{0,1,0,0,0,2,0,0},{0,0,0,0,0,0,0,0},{0,2,0,1,0,2,0,1},{0,0,0,0,0,0,2,0},{0,0,0,0,0,0,0,0},{0,0,1,0,0,0,2,0},{0,2,0,0,0,0,0,0}};
                         printf("\nsetting up jumping scenario...\n");
                         for( int i=0; i<8; i++){
                             for (int j=0; j<8; j++){
@@ -206,28 +206,30 @@ void CheckMultipleJumps(struct Game *p){
                         printf("\nAnother jump available\n");
                         SwitchTurn(p);
                         p->must_jump =1;
+                        return;
                     }else{ //no consecutive jump over this piece
                         printf("\nNo more jumps available\n");
                         p->must_jump = 0;
                         p->jump = 0;
                     }
                 
-                }else if(p->y1 > 1 && p->x1 < 6 && (p->board[p->y1-1][p->x1+1] == 2 || p->board[p->y1-1][p->x1+1] == 4)){
+                } if(p->y1 > 1 && p->x1 < 6 && (p->board[p->y1-1][p->x1+1] == 2 || p->board[p->y1-1][p->x1+1] == 4)){
                     if(p->board[p->y1-2][p->x1+2] == 0){ //jump available over this piece
                         printf("\nAnother jump available\n");
                         SwitchTurn(p);
                         p->must_jump =1;
+                        return;
                     }else{ //no consecutive jump over this piece
                         printf("\nNo more jumps available\n");
                         p->must_jump = 0;
                         p->jump = 0;
                     }
                     
-                }else{ //no nearby opposite peices
-                    printf("\nNo more jumps available\n");
-                    p->must_jump = 0;
-                    p->jump = 0;
-                }
+                }  //else{ //no nearby opposite peices
+                   // printf("\nNo more jumps available\n");
+                   // p->must_jump = 0;
+                   // p->jump = 0;
+               // }
 
             
                 
@@ -237,27 +239,25 @@ void CheckMultipleJumps(struct Game *p){
                     printf("\nAnother jump available1\n");
                     SwitchTurn(p);
                     p->must_jump =1;
+                    return;
                 }else{ //no consecutive jump available+
                     printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
             //player 1 jumping forward to the right   
-            }else if(p->y1 < 6 && p->x1 < 6 && (p->board[p->y1+1][p->x1+1] == 2 || p->board[p->y1+1][p->x1+1] == 4)){
+            } if(p->y1 < 6 && p->x1 < 6 && (p->board[p->y1+1][p->x1+1] == 2 || p->board[p->y1+1][p->x1+1] == 4)){
                 if(p->board[p->y1+2][p->x1+2] == 0){ //possible jump available
                     printf("\nAnother jump available2\n");
                     SwitchTurn(p);
                     p->must_jump =1;
+                    return;
                 }else{ //no consecutive jump available
                     printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
-            }else{ //no nearby opposite peices
-                printf("\nNo more jumps available\n");
-                p->must_jump = 0;
-                p->jump = 0;
-            }
+            } 
 
         //checking player 2 jumps
         }else if(p->turn == 2){
@@ -270,6 +270,7 @@ void CheckMultipleJumps(struct Game *p){
                         printf("\nAnother jump available1\n");
                         SwitchTurn(p);
                         p->must_jump =1;
+                        return;
                     }else{ //no consecutive jump available+
                         printf("\nNo more jumps available\n");
                         p->must_jump = 0;
@@ -280,46 +281,46 @@ void CheckMultipleJumps(struct Game *p){
                     p->must_jump = 0;
                     p->jump = 0;
                 }   
-            }else if(p->y1 < 6 && p->x1 < 6 && (p->board[p->y1+1][p->x1+1] == 1 || p->board[p->y1+1][p->x1+1] == 3)){
+             if(p->y1 < 6 && p->x1 < 6 && (p->board[p->y1+1][p->x1+1] == 1 || p->board[p->y1+1][p->x1+1] == 3)){
                 if(p->board[p->y1+2][p->x1+2] == 0){ //possible jump available
                     printf("\nAnother jump available2\n");
                     SwitchTurn(p);
                     p->must_jump =1;
+                    return;
                 }else{ //no consecutive jump available
                     printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }            
-
+             }
             }else if(p->y1 > 1 && p->x1 > 1 && (p->board[p->y1-1][p->x1-1] == 1 || p->board[p->y1-1][p->x1-1] == 3)){
                 if(p->board[p->y1-2][p->x1-2] == 0){ //jump available over this piece
                     printf("\nAnother jump available\n");
                     SwitchTurn(p);
                     p->must_jump =1;
+                    return;
                 }else{ //no consecutive jump over this piece
                     printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
                 
-            }else if(p->y1 > 1 && p->x1 < 6 && (p->board[p->y1-1][p->x1+1] == 1 || p->board[p->y1-1][p->x1+1] == 3)){
+            } if(p->y1 > 1 && p->x1 < 6 && (p->board[p->y1-1][p->x1+1] == 1 || p->board[p->y1-1][p->x1+1] == 3)){
                 if(p->board[p->y1-2][p->x1+2] == 0){ //jump available over this piece
                     printf("\nAnother jump available\n");
                     SwitchTurn(p);
                     p->must_jump =1;
+                    return;
                 }else{ //no consecutive jump over this piece
                     printf("\nNo more jumps available\n");
                     p->must_jump = 0;
                     p->jump = 0;
                 }
                 
-            }else{ //no nearby opposite peices
-                printf("\nNo more jumps available\n");
-                p->must_jump = 0;
-                p->jump = 0;
-            }
+            } 
         }
     }
+    p->must_jump = 0;
 
 }
 
