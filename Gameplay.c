@@ -63,10 +63,34 @@ void main(void){
                         printf("\nYour piece is not on that space\n");
                 }
                 else { //this is a consecutive jump...so the space they are moving is the previous destination
-                    printf("\nConsecutive jump available\n");
-                    pt->x0 = pt->x1;
-                    pt->y0 = pt->y1;
-                    break;
+                    //---------------------------------make it so they can choose to jump again or not by selecting the same piece. if the other player selects a piece then let that player do that also-----------------------------------
+                    while(1){
+                        printf("\nConsecutive jump available\n");
+                        printf("\nInput starting coordinates (if consecutive jumping, must pick same piece)(either player can go): ");
+                        //scan in the coords
+                        //check coords
+                        //jumping player must choose same piece and jump available piece
+                        //or other player can choose their peice and change to their turn, set must_jump=0
+
+                        scanf("%d %d", &(pt->x0), &(pt->y0));
+                        if(pt->board[pt->y0][pt->x0] == 0 || ( (pt->turn == pt->board[pt->y0][pt->x0] || pt->turn == pt->board[pt->y0][pt->x0]-2 ) && (pt->x0 != pt->x1 && pt->y0 != pt->y1) ) ){
+                            printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
+                        }else
+                            break;
+
+                        pt->x0 = pt->x1;
+                        pt->y0 = pt->y1;
+                        break;
+                    }
+
+                    if(pt->x0 == pt->x1 && pt->y0 == pt->y1){ //player is jumping again
+                        break;
+
+                    }else{ //other players turn
+                        SwitchTurn(pt);
+                        pt->must_jump = 0;
+                        break;
+                    }
                 }
             }
 
@@ -130,12 +154,14 @@ void SetBoard(struct Game *p){
     printf("\nTo set up jumping scenario...type 8 8 for the first player one coordinates");
 }
 
+
 void SwitchTurn(struct Game *p){
      if (p->turn==1)
         p->turn=2;
     else
         p->turn=1;
 }
+
 
 int CheckInputOne(struct Game *p){
     if(p->board[p->y0][p->x0] != p->turn && ((p->turn == 1 && p->board[p->y0][p->x0] !=3) || (p->turn == 2 && p->board[p->y0][p->x0] != 4) ))
@@ -189,6 +215,7 @@ void CheckJump(struct Game *p){
     }
 
 }
+
 
 void CheckMultipleJumps(struct Game *p){
     //check if another jump is available...if one is, then let that player go again 
@@ -352,6 +379,7 @@ void UpdateBoard(struct Game *p){
 
     }
 }
+
 
 void PrintBoard(struct Game *p){
     printf("\n");
