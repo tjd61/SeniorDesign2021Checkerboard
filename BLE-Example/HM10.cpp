@@ -14,10 +14,6 @@ void bleInitialize() {
   }
 }
 
-void bleName(String newName) {
-  
-}
-
 void bleWrite(String charString) {
   char buffer[120];
   charString.toCharArray(buffer, charString.length());
@@ -30,8 +26,8 @@ String bleRead(void) {
   String buffer;
   buffer.reserve(120);
   while(BLE_SERIAL.available()) {
-    buffer += char(BLE_SERIAL.read());
-    delay(20);
+    buffer.concat(BLE_SERIAL.readStringUntil('\r\n'));
+    delay(2);
   }
   return buffer;
 }
