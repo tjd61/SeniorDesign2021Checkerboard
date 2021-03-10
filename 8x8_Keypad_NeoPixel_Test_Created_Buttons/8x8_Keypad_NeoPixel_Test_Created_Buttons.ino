@@ -1,23 +1,10 @@
-//Last modified 3/1/21 at 10:00 PM by Dalton Hill
+//Last modified 3/10/21 at 4:00 PM by Dalton Hill
 
 #include "NDPixel.h"
 
-
-#define R1 3
-#define R2 2
-#define R3 1
-#define R4 0
-#define C1 10
-#define C2 16
-#define C3 14
-#define C4 15
-
-int buttonRows[4] = {R1, R2, R3, R4};
-int buttonCols[4] = {C1, C2, C3, C4};
-
 #define BR2 2
-#define BR1 1
-#define BR0 0
+#define BR1 0
+#define BR0 1
 #define BC2 10
 #define BC1 16
 #define BC0 14
@@ -34,8 +21,11 @@ int white[3]   = {255, 255, 255};
 int black[3]   = {0,   0,   0};
 int blue[3]    = {0,   0,   255};
 int red[3]     = {255, 0,   0};
-int yellow[3]  = {0,   255, 255};
+int cyan[3]    = {100, 255, 255};
 int green[3]   = {0,   255, 0};
+int yellow[3]  = {255, 255, 0};
+int lblue[3]   = {0,   0,   128};
+int lred[3]   = {128,   0,  0};
 
 
 //1 for player 1 piece
@@ -73,7 +63,7 @@ void setup() {
   pixels.setBrightness(1);
 
   pinMode(pinButtonTest, INPUT);
-  attachInterrupt(digitalPinToInterrupt(pinButtonTest), pressHandler, LOW);
+  //attachInterrupt(digitalPinToInterrupt(pinButtonTest), pressHandler, LOW);
 
   for (int pin : buttonTestRows) {
     pinMode(pin, OUTPUT);
@@ -90,6 +80,7 @@ void setup() {
 //INTERRUPT HANDLING
 SIGNAL(TIMER0_COMPA_vect) { //Timer 0 Counter Comparison 
   pixels.updateLEDs();
+  pressHandler();
 }
 
 void loop() {
@@ -158,18 +149,20 @@ void showLedArray() {
 }
 
 void keystroke(int row, int col) {
-  //Serial.print("Pressed r:");
-  //Serial.print(row);
-  //Serial.print(" c:");
-  //Serial.println(col);
-  for(int i = 0; i < 16; i++) {
+  Serial.print("Pressed r:");
+  Serial.print(row);
+  Serial.print(" c:");
+  Serial.println(col);
+  /*for(int i = 0; i < 16; i++) {
     pixels.setPixel(i, 0,0,0);
-  }
+  }*/
 
   
   //Checkerboard code
   int firstPressedx = 0;
   int firstPressedy = 0;
+  
+  ledColor[row][col] = 0;
   
   showLedArray();
 
@@ -290,9 +283,10 @@ void pressHandler() {
             digitalWrite(pinC0, HIGH);
             break;
         }
-
+        //delay(100);
         if(digitalRead(pinButtonTest) == LOW){
           keystroke(row,col);
+          //delay(1000);
         }
         col++;
       }
