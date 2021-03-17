@@ -38,14 +38,14 @@ int lred[3]   = {128,   0,  0};
                     0, 0, 1, 2, 
                     0, 0, 0, 1,};*/
 
-int ledColor[8][8] = {{1, 2, 3, 4, 1, 2, 3, 4,},
-                      {1, 2, 3, 4, 1, 2, 3, 4,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,},
-                      {0, 0, 0, 0, 0, 0, 0, 0,}};
+int ledColor[8][8] = {{1, 1, 1, 1, 2, 2, 2, 2,},
+                      {3, 3, 3, 3, 4, 4, 4, 4,},
+                      {1, 1, 1, 1, 2, 2, 2, 2,},
+                      {3, 3, 3, 3, 4, 4, 4, 4,},
+                      {1, 1, 1, 1, 2, 2, 2, 2,},
+                      {3, 3, 3, 3, 4, 4, 4, 4,},
+                      {1, 1, 1, 1, 2, 2, 2, 2,},
+                      {3, 3, 3, 3, 4, 4, 4, 4,},};
 
 int arraySize = 4;
                       
@@ -54,7 +54,7 @@ volatile boolean pressed[4][4];
 volatile static uint32_t threshold = 50000;
 volatile static uint32_t count = 0;
 
-NDPixel pixels(8, 16);
+NDPixel pixels(8, 24);
 
 void setup() {
   OCR0A = 0xAF; //Set Timer 0 Counter Register Value
@@ -283,7 +283,7 @@ void pressHandler() {
             digitalWrite(pinC0, HIGH);
             break;
         }
-        //delay(100);
+        delay(1000);
         if(digitalRead(pinButtonTest) == LOW){
           keystroke(row,col);
           //delay(1000);
