@@ -4,9 +4,12 @@
 
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
+//OR
+//in powershell type "gcc Gameplay.c" -> "./Gameplay"
 
-//multiple jumps should be done now
-//need to add king functionality and king rule checking
+//send Nicho list of valid spaces before each speech input is processed so he can use that info to help determine what the player said
+
+#define TERMINAL //execute this line if running in computer terminal...otherwise comment it out
 
 struct Game{
     int board[8][8];
@@ -14,6 +17,7 @@ struct Game{
     int turn, jump, must_jump;
 
 };
+
 
 //functions
 void SetBoard(struct Game *);
@@ -24,7 +28,7 @@ void CheckMultipleJumps(struct Game *);
 void SwitchTurn(struct Game *);
 void UpdateBoard(struct Game *);
 void PrintBoard(struct Game *);
-
+void GetInput(struct Game *, int coords); //coords is either the 1st set of coordinates or the 2nd set of coordinates
 
 
 void main(void){
@@ -41,7 +45,7 @@ void main(void){
                 if(pt->must_jump != 1){   //if this is not a consecutive jump
                     //get input coordinates
                     printf("\nPlayer %d turn\nInput Starting coords: ",pt->turn);
-                    scanf("%d %d", &(pt->x0), &(pt->y0));
+                    GetInput(pt, 1);
 
                     //this is for testing only
                     if(pt->x0 == 8){
@@ -72,7 +76,8 @@ void main(void){
                         //jumping player must choose same piece and jump available piece
                         //or other player can choose their peice and change to their turn, set must_jump=0
 
-                        scanf("%d %d", &(pt->x0), &(pt->y0));
+                        GetInput(pt,1);
+
                         if(pt->board[pt->y0][pt->x0] == 0 || ( (pt->turn == pt->board[pt->y0][pt->x0] || pt->turn == pt->board[pt->y0][pt->x0]-2 ) && (pt->x0 != pt->x1 && pt->y0 != pt->y1) ) ){
                             printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
                         }else
@@ -104,7 +109,7 @@ void main(void){
                 }
 
                 printf("\nInput ending coords (type starting coords to go back and pick a new piece): ");
-                scanf("%d %d", &(pt->x1), &(pt->y1));
+                GetInput(pt,2);
 
                 //process jumping a piece here before checking the second coords
                 CheckJump(pt);
@@ -191,7 +196,7 @@ int CheckInputTwo(struct Game *p){
 //check if jump is possible and valid
 void CheckJump(struct Game *p){
     p->jump = 0;
-    if(abs(p->x1 - p->x0) == 2 && abs(p->y1 - p->y0) == 2){
+    if(abs(p->x1 - p->x0) == 2 && abs(p->y1 - p->y0) == 2){ //player jumped a piece
         p->jump=1;
         //find where the jumped piece is
         int sign_x, sign_y;
@@ -391,4 +396,20 @@ void PrintBoard(struct Game *p){
         printf("\n");
     }
     printf("\n----------------------\n\n");
+}
+
+
+void GetInput(struct Game *p, int coords){
+    
+    #ifdef TERMINAL
+         if(coords == 1){
+             scanf("%d %d", &(p->x0), &(p->y0));
+         }else{
+             scanf("%d %d", &(p->x1), &(p->y1));
+         }
+    #else
+        //wait for interrupt from buttons or microphone button
+    #endif
+
+
 }
