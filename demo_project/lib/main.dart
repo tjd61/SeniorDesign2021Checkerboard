@@ -74,21 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void setMove() {
     setState(() {
-      //int row_delta;
-      //int col_delta;
       this.move = this.text;
       if (this.turn !=
           this.arr[this.coordinate1Col - 1][this.coordinate1Row - 1] - 1) {
         return;
       }
       this.arr[this.coordinate1Col - 1][this.coordinate1Row - 1] = 0;
-      /*row_delta = this.coordinate2Row - this.coordinate1Row;
-      col_delta = this.coordinate2Col - this.coordinate1Col;
-      if ((this.coordinate2Row - this.coordinate1Row).abs() == 2 &&
-          (this.coordinate2Col - this.coordinate1Col).abs() == 2) {
-        this.arr[this.coordinate2Col + row_delta]
-            [this.coordinate2Row + col_delta] = 0;
-      }*/
       if (this.turn == 0) {
         this.arr[this.coordinate2Col - 1][this.coordinate2Row - 1] = 1;
         this.turn++;
