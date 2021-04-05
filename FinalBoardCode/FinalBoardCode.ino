@@ -307,11 +307,10 @@ void pressHandler() {
             digitalWrite(pinC0, HIGH);
             break;
         }
-        //delay(1000);
-        /*if(digitalRead(pinButtonTest) == LOW){
+        if(digitalRead(pinButtonTest) == LOW){
           keystroke(row,col);
-          //delay(1000);
-        }*/
+          //Delay needs to be implemented
+        }
         col++;
       }
       row++;
