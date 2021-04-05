@@ -30,6 +30,7 @@ void UpdateBoard(struct Game *);
 void PrintBoard(struct Game *);
 void GetInput(struct Game *, int coords); //coords is either the 1st set of coordinates or the 2nd set of coordinates
 int SetTestBoard(struct Game *);
+void Play_Game(struct Game *);
 
 
 void main(void){
@@ -39,19 +40,24 @@ void main(void){
     SetBoard(pt);
     PrintBoard(pt);
 
-    while(1){
+    Play_Game(pt);
+
+}
+
+void Play_Game(struct Game *p){
+        while(1){
         while(1){
             while(1){
 
-                if(pt->must_jump != 1){   //if this is not a consecutive jump
-                    GetInput(pt, 1);
+                if(p->must_jump != 1){   //if this is not a consecutive jump
+                    GetInput(p, 1);
 
                     //this is for testing only
-                    if (SetTestBoard(pt) == 1)
+                    if (SetTestBoard(p) == 1)
                         break;
                     //
 
-                    if(CheckInputOne(pt) == 1)
+                    if(CheckInputOne(p) == 1)
                         break;
                     else
                         #ifdef TERMINAL
@@ -72,9 +78,9 @@ void main(void){
                         //check coords
                         //jumping player must choose same piece and jump available piece
                         //or other player can choose their peice and change to their turn, set must_jump=0
-                        GetInput(pt,1);
+                        GetInput(p,1);
 
-                        if(pt->board[pt->y0][pt->x0] == 0 || ( (pt->turn == pt->board[pt->y0][pt->x0] || pt->turn == pt->board[pt->y0][pt->x0]-2 ) && (pt->x0 != pt->x1 && pt->y0 != pt->y1) ) ){
+                        if(p->board[p->y0][p->x0] == 0 || ( (p->turn == p->board[p->y0][p->x0] || p->turn == p->board[p->y0][p->x0]-2 ) && (p->x0 != p->x1 && p->y0 != p->y1) ) ){
                             #ifdef TERMINAL
                                 printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
                         
@@ -84,12 +90,12 @@ void main(void){
                         }
                     }
 
-                    if(pt->x0 == pt->x1 && pt->y0 == pt->y1){ //player is jumping again
+                    if(p->x0 == p->x1 && p->y0 == p->y1){ //player is jumping again
                         break;
 
                     }else{ //other players turn
-                        SwitchTurn(pt);
-                        pt->must_jump = 0;
+                        SwitchTurn(p);
+                        p->must_jump = 0;
                         break;
                     }
                 }
@@ -98,20 +104,20 @@ void main(void){
             while(1){
                 
                 //for testing purposes
-                if(pt->x0 == 8){
-                    pt->x1 = 0;
-                    pt->y1 = 0;
+                if(p->x0 == 8){
+                    p->x1 = 0;
+                    p->y1 = 0;
                     break;
                 }
-                GetInput(pt,2);
+                GetInput(p,2);
 
                 //process jumping a piece here before checking the second coords
-                CheckJump(pt);
+                CheckJump(p);
 
                 //if 2nd coords are good continue, if not re enter coords
-                if(CheckInputTwo(pt)== 1)
+                if(CheckInputTwo(p)== 1)
                     break;
-                else if(CheckInputTwo(pt) == 0)
+                else if(CheckInputTwo(p) == 0)
                     #ifdef TERMINAL
                         printf("\nInvalid destination\n");
                     
@@ -120,18 +126,27 @@ void main(void){
                     break;
             }
 
-            if(CheckInputTwo(pt) != 2) //if coords2 != coords1 then continue
+            if(CheckInputTwo(p) != 2) //if coords2 != coords1 then continue
                 break;
         }
 
         //update and print board
-        UpdateBoard(pt);
-        PrintBoard(pt);
+        UpdateBoard(p);
+        PrintBoard(p);
         //check is consecutive jumps is possible
-        CheckMultipleJumps(pt);
-        SwitchTurn(pt);     
+        CheckMultipleJumps(p);
+        SwitchTurn(p);     
     }
-}
+
+        //update and print board
+        UpdateBoard(p);
+        PrintBoard(p);
+        //check is consecutive jumps is possible
+        CheckMultipleJumps(p);
+        SwitchTurn(p);     
+    }
+
+
 
 
 void SetBoard(struct Game *p){
