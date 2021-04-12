@@ -2,7 +2,7 @@
 #include "NDPixel.h"
 #include "LEDController.h"
 
-NDPixel pixels(Pin14, 32);
+NDPixel pixels(Pin14, 64);
 
 void showLedArray() {
   for(int showRow = 0; showRow < 8; showRow++){
@@ -16,27 +16,27 @@ void showLedArray() {
       
       int color[3];
       //No piece
-      if(ledColor[showRow][showCol] == 0){
+      if(p.board[showRow][showCol] == 0){
         for(int i = 0; i < 3; i++){
           color[i] = black[i];
         }
       //Player 1 Piece
-      }else if(ledColor[showRow][showCol] == 1){
+      }else if(p.board[showRow][showCol] == 1){
         for(int i = 0; i < 3; i++){
           color[i] = blue[i];
         }
       //Player 2 Piece
-      }else if(ledColor[showRow][showCol] == 2){
+      }else if(p.board[showRow][showCol] == 2){
         for(int i = 0; i < 3; i++){
           color[i] = red[i];
         }
       //Player 1 King
-      }else if(ledColor[showRow][showCol] == 3){
+      }else if(p.board[showRow][showCol] == 3){
         for(int i = 0; i < 3; i++){
           color[i] = green[i];
         }
       //Player 2 King
-      }else if(ledColor[showRow][showCol] == 4){
+      }else if(p.board[showRow][showCol] == 4){
         for(int i = 0; i < 3; i++){
           color[i] = yellow[i];
         }
