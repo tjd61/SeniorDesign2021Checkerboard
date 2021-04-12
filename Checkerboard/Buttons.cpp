@@ -11,6 +11,7 @@ void button_setup(void) {
     pinMode(pin, OUTPUT);
     digitalWrite(pin, LOW);
   }
+  pinMode(pinButtonTest, INPUT);
 }
 
 void keystroke(int row, int col) {
