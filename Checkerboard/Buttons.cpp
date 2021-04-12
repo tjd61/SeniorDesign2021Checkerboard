@@ -21,13 +21,14 @@ void keystroke(int row, int col) {
   /*for(int i = 0; i < 16; i++) {
     pixels.setPixel(i, 0,0,0);
   }*/
-
   
-  //Checkerboard code
-  int firstPressedx = 0;
-  int firstPressedy = 0;
+  //row is the row of the button pressed from 0 to 7 representing rows 1 to 8 respectively
+  //col is the col of the button pressed from 0 to 7 representing rows A to H respectively
   
-  ledColor[row][col] = 0;
+  //Integration of rule checking code here. Code is allowed to change p.board.
+  
+  //Test code to turn off led at pressed position
+  //p.board[row][col] = 0;
   
   showLedArray();
 
@@ -150,7 +151,12 @@ void pressHandler() {
         }
         if(digitalRead(pinButtonTest) == LOW){
           keystroke(row,col);
-          //Delay needs to be implemented
+          //Delay after a button is pressed
+          //startTime = millis();
+          //stopTime = millis();
+          //while((stopTime - startTime) > 1000){
+          //  stopTime = millis();
+          //}
         }
         col++;
       }
