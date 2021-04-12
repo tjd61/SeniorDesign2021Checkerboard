@@ -437,6 +437,8 @@ void GetInput(struct Game *p, int coords){
     
     #else    //wait for interrupt from buttons or microphone button or bluetooth
         //Dalton - read button input here
+        //if coords == 1 then load input to x0 and y0 like above
+        //if coords == 2 then load input to x1 and y1 like above
     #endif
 
 
