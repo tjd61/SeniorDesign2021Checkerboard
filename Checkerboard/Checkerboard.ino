@@ -4,8 +4,6 @@
 void setup() {
   //pixels.setBrightness(1);
 
-  //pinMode(pinButtonTest, INPUT);
-
   button_setup();
   SetBoard();
   //showLedArray();
