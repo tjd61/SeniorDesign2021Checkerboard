@@ -434,7 +434,9 @@ void GetInput(struct Game *p, int coords){
             printf("\nInput ending coords (type starting coords to go back and pick a new piece): ");
             scanf("%d %d", &(p->x1), &(p->y1));
          }
-        //wait for interrupt from buttons or microphone button or bluetooth
+    
+    #else    //wait for interrupt from buttons or microphone button or bluetooth
+        //Dalton - read button input here
     #endif
 
 
