@@ -7,12 +7,11 @@ void setup() {
   //pinMode(pinButtonTest, INPUT);
 
   button_setup();
-  //showLedArray();
   SetBoard();
+  //showLedArray();
 }
 
 void loop() {
-  //The following code isn't necessary for the button or LED code
   //pressHandler();
   //showLedArray();
   Play_Game();
