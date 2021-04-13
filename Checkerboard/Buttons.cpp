@@ -153,11 +153,11 @@ void pressHandler() {
         if(digitalRead(pinButtonTest) == LOW){
           keystroke(row,col);
           //Delay after a button is pressed
-          //startTime = millis();
-          //stopTime = millis();
-          //while((stopTime - startTime) > 1000){
-          //  stopTime = millis();
-          //}
+          int startTime = millis();
+          int stopTime = millis();
+          while((stopTime - startTime) < 500){
+            stopTime = millis();
+          }
         }
         col++;
       }
