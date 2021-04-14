@@ -5,7 +5,11 @@
 
 NDPixel pixels(Pin14, 64);
 
-void showLedArray() {
+void setupLeds(){
+  pixels.setBrightness(1);
+}
+
+void showLedArray(struct Game *p) {
   for(int showRow = 0; showRow < 8; showRow++){
     for(int testCol = 0; testCol < 8; testCol++){
       int showCol;

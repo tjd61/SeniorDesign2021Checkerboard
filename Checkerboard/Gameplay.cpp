@@ -14,7 +14,7 @@
 
 
 
-void Play_Game(void){
+void Play_Game(struct Game *p){
     while(1){
         while(1){
 
@@ -110,9 +110,7 @@ void Play_Game(void){
 
 
 
-void SetBoard(void){
-    struct Game game = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},0,0,0,0,0,0,0,0,0};
-    struct Game *pt = &game;
+void SetBoard(struct Game *p){
     
     for (int j=0; j<8; j=j+2){
         p->board[0][j] = 1;
@@ -409,7 +407,7 @@ void UpdateBoard(struct Game *p){
 
 
 void PrintBoard(struct Game *p){
-    #ifdef TERMINAL
+    #ifdef TERMINALt
         printf("\n");
         for (int i=7; i>-1; i--){
             for(int j=0; j<8; j++){
@@ -421,7 +419,7 @@ void PrintBoard(struct Game *p){
         printf("\n----------------------\n\n");
     
     #else
-    showLedArray();
+    showLedArray(p);
     #endif
 }
 

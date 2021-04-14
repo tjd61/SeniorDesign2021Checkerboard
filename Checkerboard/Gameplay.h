@@ -13,7 +13,7 @@ struct Game{
 static struct Game *p;
 
 //functions
-void SetBoard(void);
+void SetBoard(struct Game *);
 int CheckInputOne(struct Game *);
 int CheckInputTwo(struct Game *);
 void CheckJump(struct Game *);
@@ -23,6 +23,6 @@ void UpdateBoard(struct Game *);
 void PrintBoard(struct Game *);
 void GetInput(struct Game *, int coords); //coords is either the 1st set of coordinates or the 2nd set of coordinates
 int SetTestBoard(struct Game *);
-void Play_Game(void);
+void Play_Game(struct Game *);
 
 #endif

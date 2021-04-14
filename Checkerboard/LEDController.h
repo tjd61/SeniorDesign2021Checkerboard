@@ -47,6 +47,7 @@ static int lred[3]   = {128,   0,  0};
 // {2, 0, 2, 0, 2, 0, 2, 0,},
 // {0, 2, 0, 2, 0, 2, 0, 2,},};
 
-void showLedArray(void);
+void setupLeds(void);
+void showLedArray(struct Game *);
 
 #endif
