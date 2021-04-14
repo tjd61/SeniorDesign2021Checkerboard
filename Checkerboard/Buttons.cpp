@@ -14,7 +14,7 @@ void button_setup(void) {
   pinMode(pinButtonTest, INPUT);
 }
 
-void keystroke(int row, int col) {
+void keystroke(int row, int col, int coordNum) {
   //Serial.print("Pressed r:");
   //Serial.print(row);
   //Serial.print(" c:");
@@ -29,9 +29,21 @@ void keystroke(int row, int col) {
   //Integration of rule checking code here. Code is allowed to change p.board.
   
   //Test code to turn off led at pressed position
-  //p.board[row][col] = 0;
+  //p->board[row][col] = 0;
   
-  showLedArray();
+  //if coords == 1 then load input to x0 and y0 like above
+  //if coords == 2 then load input to x1 and y1 like above
+  if(coordNum == 1){
+    p->x0 = row;
+    p->y0 = col;
+  }else if(coordNum == 2){
+    p->x1 = row;
+    p->y1 = col;
+  }
+  
+  
+  
+  //showLedArray();
 
   
   /*if(row%2) {
@@ -42,7 +54,7 @@ void keystroke(int row, int col) {
 }
 
 
-void pressHandler() {
+void pressHandler(int coordNum) {
   if(true) {
     //count = 0;
     
@@ -151,7 +163,7 @@ void pressHandler() {
             break;
         }
         if(digitalRead(pinButtonTest) == LOW){
-          keystroke(row,col);
+          keystroke(row,col,coordNum);
           //Delay after a button is pressed
           int startTime = millis();
           int stopTime = millis();
