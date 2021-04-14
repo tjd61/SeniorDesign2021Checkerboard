@@ -1,6 +1,7 @@
 #include "Checkerboard.h"
 #include "NDPixel.h"
 #include "LEDController.h"
+#include "Gameplay.h"
 
 NDPixel pixels(Pin14, 64);
 

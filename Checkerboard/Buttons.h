@@ -2,6 +2,7 @@
 #define buttonController_h
 
 #include "Checkerboard.h"
+#include "Gameplay.h"
 
 //Most to least significant bit
 //List of pins to be used for sweeping button rows

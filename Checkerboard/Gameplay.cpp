@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Gameplay.h"
+#include "Buttons.h"
+#include "LEDController.h"
 
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
@@ -418,7 +420,8 @@ void PrintBoard(struct Game *p){
         }
         printf("\n----------------------\n\n");
     
-
+    #else
+    showLedArray();
     #endif
 }
 
