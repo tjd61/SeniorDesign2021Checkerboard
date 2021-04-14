@@ -10,6 +10,6 @@ static int buttonTestRows[3] = {BR2, BR1, BR0};
 static int buttonTestCols[3] = {BC2, BC1, BC0};
 
 void button_setup(void);
-void keystroke(int, int);
-void pressHandler(void);
+void keystroke(int, int, int);
+void pressHandler(int);
 #endif
