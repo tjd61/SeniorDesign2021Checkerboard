@@ -209,8 +209,9 @@ void CheckMultipleJumps(struct Game *p){
             printf("\nchecking multiple jumps\n");
         #endif
         if(p->turn == 1){
-            printf("\nchecking jumps for p1...\n");
-
+            #ifdef TERMINAL
+                printf("\nchecking jumps for p1...\n");
+            #endif
             //player 1 king and jumping backwards
             if(p->board[p->y1][p->x1] == 3){
                 if(p->y1 > 1 && p->x1 > 1 && (p->board[p->y1-1][p->x1-1] == 2 || p->board[p->y1-1][p->x1-1] == 4)){
