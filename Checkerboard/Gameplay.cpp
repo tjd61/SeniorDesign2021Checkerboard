@@ -408,7 +408,7 @@ void UpdateBoard(struct Game *p){
 
 
 void PrintBoard(struct Game *p){
-    #ifdef TERMINALt
+    #ifdef TERMINAL
         printf("\n");
         for (int i=7; i>-1; i--){
             for(int j=0; j<8; j++){
