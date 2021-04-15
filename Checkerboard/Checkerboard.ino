@@ -17,7 +17,7 @@ void setup() {
   SetBoard(pt);
   PrintBoard(pt);  //This is covered in the PrintBoard showLedArray(pt);
   
-  //button_setup();
+  button_setup();
 }
 
 void loop() {

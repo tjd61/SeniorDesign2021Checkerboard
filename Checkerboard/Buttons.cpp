@@ -14,7 +14,7 @@ void button_setup(void) {
   pinMode(pinButtonTest, INPUT);
 }
 
-void keystroke(int row, int col, int coordNum) {
+void keystroke(int row, int col, int coordNum, struct Game *p) {
   //Serial.print("Pressed r:");
   //Serial.print(row);
   //Serial.print(" c:");
@@ -40,9 +40,6 @@ void keystroke(int row, int col, int coordNum) {
     p->x1 = row;
     p->y1 = col;
   }
-  
-  
-  
   //showLedArray();
 
   
@@ -54,7 +51,7 @@ void keystroke(int row, int col, int coordNum) {
 }
 
 
-void pressHandler(int coordNum) {
+void pressHandler(int coordNum, struct Game *p) {
   if(true) {
     //count = 0;
     
@@ -163,10 +160,11 @@ void pressHandler(int coordNum) {
             break;
         }
         if(digitalRead(pinButtonTest) == LOW){
-          keystroke(row,col,coordNum);
+          keystroke(row, col, coordNum, p);
           //Delay after a button is pressed
           int startTime = millis();
           int stopTime = millis();
+          //Change 500 to the time in milliseconds for the delay between sequential button presses
           while((stopTime - startTime) < 500){
             stopTime = millis();
           }
