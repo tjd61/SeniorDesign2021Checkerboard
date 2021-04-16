@@ -4,6 +4,7 @@
 #include "Gameplay.h"
 #include "Buttons.h"
 #include "LEDController.h"
+#include "HM10.h"
 
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
@@ -449,6 +450,7 @@ void GetInput(struct Game *p, int coords){
         //Three input status values
         int buttonStatus = pressHandler(coords, p);
         //Each status needs updated
+        //int bluetoothStatus = bluetoothCommandParser(coords, p);
         int bluetoothStatus = 0;
         int speechStatus = 0;
         
@@ -457,7 +459,9 @@ void GetInput(struct Game *p, int coords){
           if(coords == 1){
             buttonStatus = pressHandler(coords, p);
             //Each status needs updated inside the loop
-            //bluetoothStatus = ;
+            
+            //bluetoothStatus = bluetoothCommandParser(coords, p);
+            
             //speechStatus = ;
           }else if(coords == 2){
             int startTime = millis();
@@ -479,7 +483,9 @@ void GetInput(struct Game *p, int coords){
             while((stopTime - startTime) < 750){
               stopTime = millis();
               buttonStatus = pressHandler(coords, p);
-              //bluetoothStatus = ;
+              
+              //bluetoothStatus = bluetoothCommandParser(coords, p);
+              
               //speechStatus = ;
               if(buttonStatus == 1 || bluetoothStatus == 1 || speechStatus == 1){
                 break;
