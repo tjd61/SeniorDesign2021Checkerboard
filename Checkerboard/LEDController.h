@@ -49,5 +49,7 @@ static int lred[3]   = {128,   0,  0};
 
 void setupLeds(void);
 void showLedArray(struct Game *);
+void turnLEDOFF(int, int);
+void updateLEDArray(void);
 
 #endif

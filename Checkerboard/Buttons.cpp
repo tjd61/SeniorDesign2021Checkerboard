@@ -12,6 +12,7 @@ void button_setup(void) {
     digitalWrite(pin, LOW);
   }
   pinMode(pinButtonTest, INPUT);
+  pinMode(Pin23, OUTPUT);
 }
 
 void keystroke(int row, int col, int coordNum, struct Game *p) {
@@ -34,11 +35,11 @@ void keystroke(int row, int col, int coordNum, struct Game *p) {
   //if coords == 1 then load input to x0 and y0 like above
   //if coords == 2 then load input to x1 and y1 like above
   if(coordNum == 1){
-    p->x0 = row;
-    p->y0 = col;
+    p->x0 = col;
+    p->y0 = row;
   }else if(coordNum == 2){
-    p->x1 = row;
-    p->y1 = col;
+    p->x1 = col;
+    p->y1 = row;
   }
   //showLedArray();
 
@@ -51,7 +52,7 @@ void keystroke(int row, int col, int coordNum, struct Game *p) {
 }
 
 
-void pressHandler(int coordNum, struct Game *p) {
+int pressHandler(int coordNum, struct Game *p) {
   if(true) {
     //count = 0;
     
@@ -168,10 +169,12 @@ void pressHandler(int coordNum, struct Game *p) {
           while((stopTime - startTime) < 500){
             stopTime = millis();
           }
+          return 1;
         }
         col++;
       }
       row++;
     }
   }
+  return 0;
 }

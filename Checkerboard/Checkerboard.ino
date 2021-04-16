@@ -23,5 +23,5 @@ void setup() {
 void loop() {
   //pressHandler();
   //showLedArray();
-  //Play_Game(pt);
+  Play_Game(pt);
 }

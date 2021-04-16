@@ -61,3 +61,20 @@ void showLedArray(struct Game *p) {
   }
   pixels.updateLEDs();
 }
+
+void updateLEDArray(){
+  pixels.updateLEDs();
+}
+
+void turnLEDOFF(int row, int col){
+  int testOffCol = col;
+  int showOffRow = row;
+  int showOffCol;
+  if(showOffRow%2 == 1) {
+    showOffCol = 7 - testOffCol;
+  } else {
+    showOffCol = testOffCol;
+  }
+  pixels.setPixel(showOffRow*8 + showOffCol, black[0], black[1], black[2]);
+  pixels.updateLEDs();
+}

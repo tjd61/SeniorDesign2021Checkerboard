@@ -12,5 +12,5 @@ static int buttonTestCols[3] = {BC2, BC1, BC0};
 
 void button_setup(void);
 void keystroke(int, int, int, struct Game *);
-void pressHandler(int, struct Game *);
+int pressHandler(int, struct Game *);
 #endif

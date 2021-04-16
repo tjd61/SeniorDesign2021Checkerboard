@@ -28,7 +28,8 @@ void Play_Game(struct Game *p){
                 else {
                     #ifdef TERMINAL
                         printf("\nYour piece is not on that space\n");
-                    
+                    #else
+                            game_over_sound();
                     #endif
                 }
             }
@@ -50,7 +51,8 @@ void Play_Game(struct Game *p){
                     if(p->board[p->y0][p->x0] == 0 || ( (p->turn == p->board[p->y0][p->x0] || p->turn == p->board[p->y0][p->x0]-2 ) && (p->x0 != p->x1 && p->y0 != p->y1) ) ){
                         #ifdef TERMINAL
                             printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
-                    
+                        #else
+                            game_over_sound();
                         #endif
                     }
                     else {
@@ -88,7 +90,8 @@ void Play_Game(struct Game *p){
             else if(CheckInputTwo(p) == 0) {
                 #ifdef TERMINAL
                     printf("\nInvalid destination\n");
-                
+                #else
+                    game_over_sound();
                 #endif
             }
             else break;
@@ -162,9 +165,10 @@ int CheckInputTwo(struct Game *p){
             return 0;
         }
     }
-    if(p->x0 == p->x1 && p->y0 == p->y1) //same as first coords...choose different first coords
+    if(p->x0 == p->x1 && p->y0 == p->y1){ //same as first coords...choose different first coords
+        PrintBoard(p);
         return 2;
-    else if(p->board[p->y1][p->x1] != 0 || abs(p->x0 - p->x1) != abs(p->y0 - p->y1) || (p->turn == 1 && p->board[p->y0][p->x0] != 3 && p->y1-p->y0 < 0 ) || (p->turn == 2 && p->board[p->y0][p->x0] != 4 && p->y1-p->y0 > 0) || ( (abs(p->x0-p->x1) != 1) && (abs(p->y0-p->y1) != 1) && p->jump == 0)) //rule checking should be good for normal pieces
+    }else if(p->board[p->y1][p->x1] != 0 || abs(p->x0 - p->x1) != abs(p->y0 - p->y1) || (p->turn == 1 && p->board[p->y0][p->x0] != 3 && p->y1-p->y0 < 0 ) || (p->turn == 2 && p->board[p->y0][p->x0] != 4 && p->y1-p->y0 > 0) || ( (abs(p->x0-p->x1) != 1) && (abs(p->y0-p->y1) != 1) && p->jump == 0)) //rule checking should be good for normal pieces
         return 0;
     else
         return 1;
@@ -209,9 +213,8 @@ void CheckMultipleJumps(struct Game *p){
             printf("\nchecking multiple jumps\n");
         #endif
         if(p->turn == 1){
-            #ifdef TERMINAL
-                printf("\nchecking jumps for p1...\n");
-            #endif
+            printf("\nchecking jumps for p1...\n");
+
             //player 1 king and jumping backwards
             if(p->board[p->y1][p->x1] == 3){
                 if(p->y1 > 1 && p->x1 > 1 && (p->board[p->y1-1][p->x1-1] == 2 || p->board[p->y1-1][p->x1-1] == 4)){
@@ -408,7 +411,7 @@ void UpdateBoard(struct Game *p){
 
 
 void PrintBoard(struct Game *p){
-    #ifdef TERMINAL
+    #ifdef TERMINALt
         printf("\n");
         for (int i=7; i>-1; i--){
             for(int j=0; j<8; j++){
@@ -420,7 +423,7 @@ void PrintBoard(struct Game *p){
         printf("\n----------------------\n\n");
     
     #else
-    showLedArray(p);
+        showLedArray(p);
     #endif
 }
 
@@ -442,7 +445,50 @@ void GetInput(struct Game *p, int coords){
         //Dalton - read button input here
         //if coords == 1 then load input to x0 and y0 like above
         //if coords == 2 then load input to x1 and y1 like above
-        pressHandler(coords, p);
+
+        //Three input status values
+        int buttonStatus = pressHandler(coords, p);
+        //Each status needs updated
+        int bluetoothStatus = 0;
+        int speechStatus = 0;
+        
+        int toggleBit = 0;
+        while(buttonStatus == 0 && bluetoothStatus == 0 && speechStatus == 0){
+          if(coords == 1){
+            buttonStatus = pressHandler(coords, p);
+            //Each status needs updated inside the loop
+            //bluetoothStatus = ;
+            //speechStatus = ;
+          }else if(coords == 2){
+            int startTime = millis();
+            int stopTime = millis();
+            
+            //Turn LED off
+            if(toggleBit == 0){
+              int col = p->x0;
+              int row = p->y0;
+              turnLEDOFF(row, col);
+              toggleBit = 1;
+            //Turn LED on
+            }else{
+              PrintBoard(p);
+              toggleBit = 0;
+            }
+
+            //Change 500 to the time in milliseconds for the delay between sequential button presses
+            while((stopTime - startTime) < 750){
+              stopTime = millis();
+              buttonStatus = pressHandler(coords, p);
+              //bluetoothStatus = ;
+              //speechStatus = ;
+              if(buttonStatus == 1 || bluetoothStatus == 1 || speechStatus == 1){
+                break;
+              }
+            }
+          }
+        }
+
+        
     #endif
 
 
@@ -463,4 +509,19 @@ int SetTestBoard(struct Game *p){
         }
         else
             return 0;
+}
+
+void game_over_sound(){
+  /*delay(500);
+  tone(A0, 500, 200);
+  delay(200);
+  tone(A0, 1200, 200);*/
+  delay(200);
+  tone(A0, 300, 200);
+  /*delay(200);
+  tone(A0, 1000, 200);
+  delay(200);
+  tone(A0, 400, 200);
+  delay(200);
+  tone(A0, 1100, 200);*/
 }
