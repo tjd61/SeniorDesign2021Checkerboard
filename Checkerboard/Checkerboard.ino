@@ -15,7 +15,7 @@ struct Game *pt = &game;
 
 void setup() {
   setupLeds();
-  bleInitialize();
+  //bleInitialize();
   SetBoard(pt);
   PrintBoard(pt);  //This is covered in the PrintBoard showLedArray(pt);
   

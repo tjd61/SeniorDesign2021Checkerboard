@@ -51,5 +51,6 @@ void setupLeds(void);
 void showLedArray(struct Game *);
 void turnLEDOFF(int, int);
 void updateLEDArray(void);
+void setAllLeds(int);
 
 #endif

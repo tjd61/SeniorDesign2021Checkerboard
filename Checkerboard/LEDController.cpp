@@ -78,3 +78,12 @@ void turnLEDOFF(int row, int col){
   pixels.setPixel(showOffRow*8 + showOffCol, black[0], black[1], black[2]);
   pixels.updateLEDs();
 }
+
+void setAllLeds(int player){
+  if(player == 1){
+    pixels.setAll(blue[0], blue[1], blue[2]);
+  }else if(player == 2){
+    pixels.setAll(red[0], red[1], red[2]);
+  }
+  pixels.updateLEDs();
+}

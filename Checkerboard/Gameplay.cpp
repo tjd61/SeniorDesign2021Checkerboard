@@ -30,7 +30,7 @@ void Play_Game(struct Game *p){
                     #ifdef TERMINAL
                         printf("\nYour piece is not on that space\n");
                     #else
-                            game_over_sound();
+                            invalidMoveMade(p);
                     #endif
                 }
             }
@@ -53,7 +53,7 @@ void Play_Game(struct Game *p){
                         #ifdef TERMINAL
                             printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
                         #else
-                            game_over_sound();
+                            invalidMoveMade(p);
                         #endif
                     }
                     else {
@@ -92,7 +92,7 @@ void Play_Game(struct Game *p){
                 #ifdef TERMINAL
                     printf("\nInvalid destination\n");
                 #else
-                    game_over_sound();
+                    invalidMoveMade(p);
                 #endif
             }
             else break;
@@ -517,7 +517,7 @@ int SetTestBoard(struct Game *p){
             return 0;
 }
 
-void game_over_sound(){
+void invalidSound(){
   /*delay(500);
   tone(A0, 500, 200);
   delay(200);
@@ -530,4 +530,18 @@ void game_over_sound(){
   tone(A0, 400, 200);
   delay(200);
   tone(A0, 1100, 200);*/
+}
+
+void invalidMoveMade(struct Game *p){
+
+  int player = p->turn;
+  
+  //Flash LEDs color of player
+  setAllLeds(player);
+
+  //Made invalid noise
+  invalidSound();
+  
+  //Update board to memory array
+  PrintBoard(p);
 }
