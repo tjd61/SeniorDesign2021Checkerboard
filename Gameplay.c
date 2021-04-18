@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+//#include "Gameplay.h"
+//#include "Buttons.h"
+//#include "LEDController.h"
 
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
@@ -9,7 +12,7 @@
 
 //send Nicho list of valid spaces before each speech input is processed so he can use that info to help determine what the player said
 
-#define TERMINAL //execute this line if running in computer terminal...otherwise comment it out
+#define TERMINAL
 
 struct Game{
     int board[8][8];
@@ -17,7 +20,6 @@ struct Game{
     int turn, jump, must_jump;
 
 };
-
 
 //functions
 void SetBoard(struct Game *);
@@ -30,112 +32,122 @@ void UpdateBoard(struct Game *);
 void PrintBoard(struct Game *);
 void GetInput(struct Game *, int coords); //coords is either the 1st set of coordinates or the 2nd set of coordinates
 int SetTestBoard(struct Game *);
+void Play_Game(struct Game *);
+void PossibleMoves(struct Game *);
 
+
+struct Game game = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},0,0,0,0,0,0,0,0,0};
+struct Game *pt = &game;
 
 void main(void){
-    struct Game game = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},0,0,0,0,0,0,0,0,0};
-    struct Game *pt = &game;
-
     SetBoard(pt);
     PrintBoard(pt);
+    Play_Game(pt);
+  
+}
 
+void Play_Game(struct Game *p){
+    while(1){
+    
+    
     while(1){
         while(1){
-            while(1){
 
-                if(pt->must_jump != 1){   //if this is not a consecutive jump
-                    GetInput(pt, 1);
+            if(p->must_jump != 1){   //if this is not a consecutive jump
+                GetInput(p, 1);
 
-                    //this is for testing only
-                    if (SetTestBoard(pt) == 1)
-                        break;
-                    //
+                //this is for testing only
+                if (SetTestBoard(p) == 1) break;
 
-                    if(CheckInputOne(pt) == 1)
-                        break;
-                    else
-                        #ifdef TERMINAL
-                            printf("\nYour piece is not on that space\n");
-                        
-                        #endif
-                }
-                else { //this is a consecutive jump...so the space they are moving is the previous destination
-                    //---------------------------------make it so they can choose to jump again or not by selecting the same piece. if the other player selects a piece then let that player do that also-----------------------------------
-                    while(1){
-                        #ifdef TERMINAL
-                            printf("\nConsecutive jump available\n");
-                            printf("\nInput starting coordinates (if consecutive jumping, must pick same piece)(either player can go): ");
-                        
-                        #endif
-
-                        //scan in the coords
-                        //check coords
-                        //jumping player must choose same piece and jump available piece
-                        //or other player can choose their peice and change to their turn, set must_jump=0
-                        GetInput(pt,1);
-
-                        if(pt->board[pt->y0][pt->x0] == 0 || ( (pt->turn == pt->board[pt->y0][pt->x0] || pt->turn == pt->board[pt->y0][pt->x0]-2 ) && (pt->x0 != pt->x1 && pt->y0 != pt->y1) ) ){
-                            #ifdef TERMINAL
-                                printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
-                        
-                            #endif
-                        }else{
-                            break;
-                        }
-                    }
-
-                    if(pt->x0 == pt->x1 && pt->y0 == pt->y1){ //player is jumping again
-                        break;
-
-                    }else{ //other players turn
-                        SwitchTurn(pt);
-                        pt->must_jump = 0;
-                        break;
-                    }
-                }
-            }
-
-            while(1){
-                
-                //for testing purposes
-                if(pt->x0 == 8){
-                    pt->x1 = 0;
-                    pt->y1 = 0;
-                    break;
-                }
-                GetInput(pt,2);
-
-                //process jumping a piece here before checking the second coords
-                CheckJump(pt);
-
-                //if 2nd coords are good continue, if not re enter coords
-                if(CheckInputTwo(pt)== 1)
-                    break;
-                else if(CheckInputTwo(pt) == 0)
+                if(CheckInputOne(p) == 1) break;
+                else {
                     #ifdef TERMINAL
-                        printf("\nInvalid destination\n");
+                        printf("\nYour piece is not on that space\n");
                     
                     #endif
-                else
-                    break;
+                }
             }
+            else { //this is a consecutive jump...so the space they are moving is the previous destination
+                //---------------------------------make it so they can choose to jump again or not by selecting the same piece. if the other player selects a piece then let that player do that also-----------------------------------
+                while(1){
+                    #ifdef TERMINAL
+                        printf("\nConsecutive jump available\n");
+                        printf("\nInput starting coordinates (if consecutive jumping, must pick same piece)(either player can go): ");
+                    
+                    #endif
 
-            if(CheckInputTwo(pt) != 2) //if coords2 != coords1 then continue
-                break;
+                    //scan in the coords
+                    //check coords
+                    //jumping player must choose same piece and jump available piece
+                    //or other player can choose their peice and change to their turn, set must_jump=0
+                    GetInput(p,1);
+
+                    if(p->board[p->y0][p->x0] == 0 || ( (p->turn == p->board[p->y0][p->x0] || p->turn == p->board[p->y0][p->x0]-2 ) && (p->x0 != p->x1 && p->y0 != p->y1) ) ){
+                        #ifdef TERMINAL
+                            printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
+                    
+                        #endif
+                    }
+                    else {
+                        break;
+                    }
+                }
+
+                if(p->x0 == p->x1 && p->y0 == p->y1) { //player is jumping again
+                    break;
+
+                }
+                else { //other players turn
+                    SwitchTurn(p);
+                    p->must_jump = 0;
+                    break;
+                }
+            }
         }
 
-        //update and print board
-        UpdateBoard(pt);
-        PrintBoard(pt);
-        //check is consecutive jumps is possible
-        CheckMultipleJumps(pt);
-        SwitchTurn(pt);     
+        while(1){
+            
+            //for testing purposes
+            if(p->x0 == 8){
+                p->x1 = 0;
+                p->y1 = 0;
+                break;
+            }
+            GetInput(p,2);
+
+            //process jumping a piece here before checking the second coords
+            CheckJump(p);
+
+            //if 2nd coords are good continue, if not re enter coords
+            if(CheckInputTwo(p)== 1) break;
+            else if(CheckInputTwo(p) == 0) {
+                #ifdef TERMINAL
+                    printf("\nInvalid destination\n");
+                
+                #endif
+            }
+            else break;
+        }
+
+        if(CheckInputTwo(p) != 2) { //if coords2 != coords1 then continue
+            break;
+        }
     }
+
+    //update and print board
+    UpdateBoard(p);
+    PrintBoard(p);
+    //check is consecutive jumps is possible
+    CheckMultipleJumps(p);
+    SwitchTurn(p);
+}
 }
 
 
-void SetBoard(struct Game *p){
 
+
+void SetBoard(struct Game *p){
+    
     for (int j=0; j<8; j=j+2){
         p->board[0][j] = 1;
         p->board[2][j] = 1;
@@ -442,15 +454,18 @@ void PrintBoard(struct Game *p){
         }
         printf("\n----------------------\n\n");
     
-
+    #else
+    showLedArray();
     #endif
 }
 
 
 void GetInput(struct Game *p, int coords){
     
-    #ifdef TERMINAL
+    #ifdef TERMINAL        
          if(coords == 1){
+             printf("\n\nAvailable moves : \n");
+             PossibleMoves(p);
             if(p->must_jump != 1)
                 printf("\nPlayer %d turn\nInput Starting coords: ",p->turn);
             scanf("%d %d", &(p->x0), &(p->y0));
@@ -459,7 +474,12 @@ void GetInput(struct Game *p, int coords){
             scanf("%d %d", &(p->x1), &(p->y1));
          }
     
+    #else
         //wait for interrupt from buttons or microphone button or bluetooth
+        //Dalton - read button input here
+        //if coords == 1 then load input to x0 and y0 like above
+        //if coords == 2 then load input to x1 and y1 like above
+        pressHandler(coords);
     #endif
 
 
@@ -480,4 +500,203 @@ int SetTestBoard(struct Game *p){
         }
         else
             return 0;
+}
+
+void PossibleMoves(struct Game *p){
+    //for players turn, scan through board and determine all possible moves (both sets of coords)
+    int moves[16][4] = {0}, n=0; //8 arrays of 4 numbers each -- in the form [x0,y0,x1,y1]
+
+    for( int i=0; i<8; i++){
+        for (int j=0; j<8; j++){
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //change y1 x1 to i j DONE
+                //remove writing variables DONE
+                //remove switch turn functions DONE
+                //can delete else clauses where no more jumps available DONE
+                //add possible moves to array as (j,i) DONE
+                //increment index n DONE
+
+            //check possible jumps 
+            if(p->turn == 1){
+            
+
+                //player 1 king and jumping backwards
+                if(p->board[i][j] == 3){
+                    if(i > 1 && j > 1 && (p->board[i-1][j-1] == 2 || p->board[i-1][j-1] == 4)){
+                        if(p->board[i-2][j-2] == 0){ //jump available over this piece
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i-2;
+                            n++;                               
+                        }
+                    
+                    } if(i > 1 && j < 6 && (p->board[i-1][j+1] == 2 || p->board[i-1][j+1] == 4)){
+                        if(p->board[i-2][j+2] == 0){ //jump available over this piece
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+2;
+                            moves[n][3] = i-2;
+                            n++;    
+                        }
+                        
+                    }  
+
+                
+                    
+                    //player 1 jumping forward to the left
+                    }else if(i < 6 && p-> x1 > 1 && (p->board[i][j] == 1 || p->board[i][j] == 3) && (p->board[i+1][j-1] == 2 || p->board[i+1][j-1] == 4)){
+                        if(p->board[i+2][j-2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    //player 1 jumping forward to the right   
+                    } if(i < 6 && j < 6 && (p->board[i][j] == 1 || p->board[i][j] == 3) && (p->board[i+1][j+1] == 2 || p->board[i+1][j+1] == 4)){
+                        if(p->board[i+2][j+2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    } 
+
+            //checking player 2 jumps
+            }else if(p->turn == 2){
+
+                //player 2 king jumping backwards
+                if(p->board[i][j] == 4){
+                    if(i < 6 && p-> x1 > 1 && (p->board[i+1][j-1] == 1 || p->board[i+1][j-1] == 3)){
+                        if(p->board[i+2][j-2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    }
+                if(i < 6 && j < 6 && (p->board[i+1][j+1] == 1 || p->board[i+1][j+1] == 3)){
+                    if(p->board[i+2][j+2] == 0){ //possible jump available
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j+2;
+                        moves[n][3] = i+2;
+                        n++;   
+                    }      
+                }
+                }else if(i > 1 && j > 1 && (p->board[i][j] == 2 || p->board[i][j] == 4) && (p->board[i-1][j-1] == 1 || p->board[i-1][j-1] == 3)){
+                    if(p->board[i-2][j-2] == 0){ //jump available over this piece
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j-2;
+                        moves[n][3] = i-2;
+                        n++;   
+                    }
+                    
+                } if(i > 1 && j < 6 && (p->board[i][j] == 2 || p->board[i][j] == 4) && (p->board[i-1][j+1] == 1 || p->board[i-1][j+1] == 3)){
+                    if(p->board[i-2][j+2] == 0){ //jump available over this piece
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j+2;
+                        moves[n][3] = i-2;
+                        n++;   
+                    }
+                    
+                } 
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //check possible 1 space moves
+
+            //cycle through all spaces
+            //if peice is a king, check if board[i+-1][j+-1] == 0
+            //if peice is a normal piece, check if 2 forward diagnol spaces are available
+            if(p->turn == 1){ //player 1
+                if(p->board[i][j] == 3){ //king
+                //check backward diagnols
+                
+                    if(i > 0 && j > 0 && (p->board[i-1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i-1;
+                            n++;                          
+                    
+                    } if(i > 0 && j < 7 && (p->board[i-1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i-1;
+                            n++;    
+                    }    
+                    
+                } if(p->board[i][j] == 1 || p->board[i][j] == 3){ //normal piece
+                //check forward diagnols
+                    if(i < 7 && j < 7 && (p->board[i+1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i+1;
+                            n++;                          
+                    
+                    } if(i < 7 && j > 0 && (p->board[i+1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i+1;
+                            n++;    
+                        }    
+                    }
+                }
+             else{ //player 2
+                if(p->board[i][j] == 4){ //king
+                //check backward diagnols
+                    if(i < 7 && j < 7 && (p->board[i+1][j+1] == 0)){ //space is available
+                                moves[n][0] = j;
+                                moves[n][1] = i;
+                                moves[n][2] = j+1;
+                                moves[n][3] = i+1;
+                                n++;                          
+                        
+                        } if(i < 7 && j > 0 && (p->board[i+1][j-1] == 0)){ //space is available
+                                moves[n][0] = j;
+                                moves[n][1] = i;
+                                moves[n][2] = j-1;
+                                moves[n][3] = i+1;
+                                n++;    
+                        }    
+                    
+                } if(p->board[i][j] == 2 || p->board[i][j] == 4){ //normal piece
+                //check forward diagnols
+                    if(i > 0 && j > 0 && (p->board[i-1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i-1;
+                            n++;                          
+                    
+                    } if(i > 0 && j < 7 && (p->board[i-1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i-1;
+                            n++;    
+                    }    
+
+                }
+            }
+        
+        }
+    }
+    
+    //print possible moves
+    #ifdef TERMINAL
+        for (int k=0; k<8 ; k++){
+            printf("\n [ (%d , %d) (%d , %d)", moves[k][0],moves[k][1],moves[k][2],moves[k][3]);
+        }
+    #endif
 }
