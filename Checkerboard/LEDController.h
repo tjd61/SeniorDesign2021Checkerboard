@@ -8,6 +8,7 @@ static int red[3]     = {255, 0,   0};
 static int cyan[3]    = {100, 255, 255};
 static int green[3]   = {0,   255, 0};
 static int yellow[3]  = {255, 255, 0};
+static int orange[3]  = {255,  69, 0};
 static int lblue[3]   = {0,   0,   128};
 static int lred[3]   = {128,   0,  0};
 

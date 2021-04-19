@@ -10,6 +10,8 @@ struct Game{
 
 };
 
+
+
 static struct Game *p;
 
 //functions
@@ -26,5 +28,7 @@ int SetTestBoard(struct Game *);
 void Play_Game(struct Game *);
 void invalidSound(void);
 void invalidMoveMade(struct Game *);
+void PossibleMoves(struct Game *);
+int SpeechHandler(struct Game *);
 
 #endif

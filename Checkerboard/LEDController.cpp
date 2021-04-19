@@ -6,7 +6,7 @@
 NDPixel pixels(Pin14, 64);
 
 void setupLeds(){
-  pixels.setBrightness(1);
+  pixels.setBrightness(100);
 }
 
 void showLedArray(struct Game *p) {
@@ -43,7 +43,7 @@ void showLedArray(struct Game *p) {
       //Player 2 King
       }else if(p->board[showRow][showCol] == 4){
         for(int i = 0; i < 3; i++){
-          color[i] = yellow[i];
+          color[i] = orange[i];
         }
       }
       pixels.setPixel(showRow*8 + testCol, color[0], color[1], color[2]);

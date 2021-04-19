@@ -5,6 +5,7 @@
 #include "Buttons.h"
 #include "LEDController.h"
 #include "HM10.h"
+#include <Wire.h>
 
 //open powershell to run
 //then in Visual Studio Code click 'Terminal'->'Run Task' ... gcc.exe ... then in Powershell type  ./Gameplay while in the correct directory
@@ -13,7 +14,8 @@
 
 //send Nicho list of valid spaces before each speech input is processed so he can use that info to help determine what the player said
 
-
+byte moves[16][4] = {0}, n=0; //8 arrays of 4 numbers each -- in the form [x0,y0,x1,y1]
+boolean speechEnabled = false;
 
 void Play_Game(struct Game *p){
     while(1){
@@ -48,7 +50,7 @@ void Play_Game(struct Game *p){
                     //jumping player must choose same piece and jump available piece
                     //or other player can choose their peice and change to their turn, set must_jump=0
                     GetInput(p,1);
-
+  
                     if(p->board[p->y0][p->x0] == 0 || ( (p->turn == p->board[p->y0][p->x0] || p->turn == p->board[p->y0][p->x0]-2 ) && (p->x0 != p->x1 && p->y0 != p->y1) ) ){
                         #ifdef TERMINAL
                             printf("\nInvalid coordinate.  Must choose same piece to jump or other player choose their piece\n");
@@ -81,9 +83,12 @@ void Play_Game(struct Game *p){
                 p->y1 = 0;
                 break;
             }
-            GetInput(p,2);
+            if(!speechEnabled){
+              GetInput(p,2);
+              //process jumping a piece here before checking the second coords
+              
+            }
 
-            //process jumping a piece here before checking the second coords
             CheckJump(p);
 
             //if 2nd coords are good continue, if not re enter coords
@@ -107,7 +112,9 @@ void Play_Game(struct Game *p){
     UpdateBoard(p);
     PrintBoard(p);
     //check is consecutive jumps is possible
-    CheckMultipleJumps(p);
+    if(!speechEnabled){
+      CheckMultipleJumps(p);
+    }
     SwitchTurn(p);
 }
 
@@ -413,18 +420,19 @@ void UpdateBoard(struct Game *p){
 
 void PrintBoard(struct Game *p){
     #ifdef TERMINALt
-        printf("\n");
+        Serial.print("\n");
         for (int i=7; i>-1; i--){
             for(int j=0; j<8; j++){
-                printf("%d", p->board[i][j]);
-                printf("  ");
+                Serial.print(p->board[i][j]);
+                Serial.print("  ");
             }
-            printf("\n");
+            Serial.println();
         }
-        printf("\n----------------------\n\n");
+        
+        //Serial.print("\n----------------------\n\n");
     
     #else
-        showLedArray(p);
+       // showLedArray(p);
     #endif
 }
 
@@ -446,13 +454,21 @@ void GetInput(struct Game *p, int coords){
         //Dalton - read button input here
         //if coords == 1 then load input to x0 and y0 like above
         //if coords == 2 then load input to x1 and y1 like above
-
+        Serial.println("\n Sending Possible Moves");
+        PossibleMoves(p); //gets possible moves and sends to slave
         //Three input status values
         int buttonStatus = pressHandler(coords, p);
         //Each status needs updated
         //int bluetoothStatus = bluetoothCommandParser(coords, p);
         int bluetoothStatus = 0;
+        //int bluetoothStatus = bluetoothCommandParser(coords, p);
         int speechStatus = 0;
+        /*if(coords == 1){
+          speechStatus = SpeechHandler(p);
+          speechEnabled = true;
+        }else{
+          speechStatus = 0;
+        }*/
         
         int toggleBit = 0;
         while(buttonStatus == 0 && bluetoothStatus == 0 && speechStatus == 0){
@@ -462,8 +478,13 @@ void GetInput(struct Game *p, int coords){
             
             //bluetoothStatus = bluetoothCommandParser(coords, p);
             
-            //speechStatus = ;
-          }else if(coords == 2){
+            speechStatus = SpeechHandler(p);
+            if(speechStatus == 1){
+              speechEnabled = true;
+            }else{
+              speechEnabled = false;
+            }
+          }else if(coords == 2 && !speechEnabled){
             int startTime = millis();
             int stopTime = millis();
             
@@ -486,7 +507,6 @@ void GetInput(struct Game *p, int coords){
               
               //bluetoothStatus = bluetoothCommandParser(coords, p);
               
-              //speechStatus = ;
               if(buttonStatus == 1 || bluetoothStatus == 1 || speechStatus == 1){
                 break;
               }
@@ -544,4 +564,247 @@ void invalidMoveMade(struct Game *p){
   
   //Update board to memory array
   PrintBoard(p);
+}
+
+void PossibleMoves(struct Game *p){
+    //for players turn, scan through board and determine all possible moves (both sets of coords)
+    
+    int n=0;
+    moves[16][4] = {0};
+    for( int i=0; i<8; i++){
+        for (int j=0; j<8; j++){
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //change y1 x1 to i j DONE
+                //remove writing variables DONE
+                //remove switch turn functions DONE
+                //can delete else clauses where no more jumps available DONE
+                //add possible moves to array as (j,i) DONE
+                //increment index n DONE
+
+            //check possible jumps 
+            if(p->turn == 1){
+            
+
+                //player 1 king and jumping backwards
+                if(p->board[i][j] == 3){
+                    if(i > 1 && j > 1 && (p->board[i-1][j-1] == 2 || p->board[i-1][j-1] == 4)){
+                        if(p->board[i-2][j-2] == 0){ //jump available over this piece
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i-2;
+                            n++;                               
+                        }
+                    
+                    } if(i > 1 && j < 6 && (p->board[i-1][j+1] == 2 || p->board[i-1][j+1] == 4)){
+                        if(p->board[i-2][j+2] == 0){ //jump available over this piece
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+2;
+                            moves[n][3] = i-2;
+                            n++;    
+                        }
+                        
+                    }  
+
+                
+                    
+                    //player 1 jumping forward to the left
+                    }else if(i < 6 && p-> x1 > 1 && (p->board[i][j] == 1 || p->board[i][j] == 3) && (p->board[i+1][j-1] == 2 || p->board[i+1][j-1] == 4)){
+                        if(p->board[i+2][j-2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    //player 1 jumping forward to the right   
+                    } if(i < 6 && j < 6 && (p->board[i][j] == 1 || p->board[i][j] == 3) && (p->board[i+1][j+1] == 2 || p->board[i+1][j+1] == 4)){
+                        if(p->board[i+2][j+2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    } 
+
+            //checking player 2 jumps
+            }else if(p->turn == 2){
+
+                //player 2 king jumping backwards
+                if(p->board[i][j] == 4){
+                    if(i < 6 && p-> x1 > 1 && (p->board[i+1][j-1] == 1 || p->board[i+1][j-1] == 3)){
+                        if(p->board[i+2][j-2] == 0){ //possible jump available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-2;
+                            moves[n][3] = i+2;
+                            n++;   
+                        }
+                    }
+                if(i < 6 && j < 6 && (p->board[i+1][j+1] == 1 || p->board[i+1][j+1] == 3)){
+                    if(p->board[i+2][j+2] == 0){ //possible jump available
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j+2;
+                        moves[n][3] = i+2;
+                        n++;   
+                    }      
+                }
+                }else if(i > 1 && j > 1 && (p->board[i][j] == 2 || p->board[i][j] == 4) && (p->board[i-1][j-1] == 1 || p->board[i-1][j-1] == 3)){
+                    if(p->board[i-2][j-2] == 0){ //jump available over this piece
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j-2;
+                        moves[n][3] = i-2;
+                        n++;   
+                    }
+                    
+                } if(i > 1 && j < 6 && (p->board[i][j] == 2 || p->board[i][j] == 4) && (p->board[i-1][j+1] == 1 || p->board[i-1][j+1] == 3)){
+                    if(p->board[i-2][j+2] == 0){ //jump available over this piece
+                        moves[n][0] = j;
+                        moves[n][1] = i;
+                        moves[n][2] = j+2;
+                        moves[n][3] = i-2;
+                        n++;   
+                    }
+                    
+                } 
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //check possible 1 space moves
+
+            //cycle through all spaces
+            //if peice is a king, check if board[i+-1][j+-1] == 0
+            //if peice is a normal piece, check if 2 forward diagnol spaces are available
+            if(p->turn == 1){ //player 1
+                if(p->board[i][j] == 3){ //king
+                //check backward diagnols
+                
+                    if(i > 0 && j > 0 && (p->board[i-1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i-1;
+                            n++;                          
+                    
+                    } if(i > 0 && j < 7 && (p->board[i-1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i-1;
+                            n++;    
+                    }    
+                    
+                } if(p->board[i][j] == 1 || p->board[i][j] == 3){ //normal piece
+                //check forward diagnols
+                    if(i < 7 && j < 7 && (p->board[i+1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i+1;
+                            n++;                          
+                    
+                    } if(i < 7 && j > 0 && (p->board[i+1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i+1;
+                            n++;    
+                        }    
+                    }
+                }
+             else{ //player 2
+                if(p->board[i][j] == 4){ //king
+                //check backward diagnols
+                    if(i < 7 && j < 7 && (p->board[i+1][j+1] == 0)){ //space is available
+                                moves[n][0] = j;
+                                moves[n][1] = i;
+                                moves[n][2] = j+1;
+                                moves[n][3] = i+1;
+                                n++;                          
+                        
+                        } if(i < 7 && j > 0 && (p->board[i+1][j-1] == 0)){ //space is available
+                                moves[n][0] = j;
+                                moves[n][1] = i;
+                                moves[n][2] = j-1;
+                                moves[n][3] = i+1;
+                                n++;    
+                        }    
+                    
+                } if(p->board[i][j] == 2 || p->board[i][j] == 4){ //normal piece
+                //check forward diagnols
+                    if(i > 0 && j > 0 && (p->board[i-1][j-1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j-1;
+                            moves[n][3] = i-1;
+                            n++;                          
+                    
+                    } if(i > 0 && j < 7 && (p->board[i-1][j+1] == 0)){ //space is available
+                            moves[n][0] = j;
+                            moves[n][1] = i;
+                            moves[n][2] = j+1;
+                            moves[n][3] = i-1;
+                            n++;    
+                    }    
+
+                }
+            }
+        
+        }
+    }
+    
+    //print possible moves
+    #ifdef TERMINAL
+        for (int k=0; k<16 ; k++){
+            printf("\n [ (%d , %d) (%d , %d)", moves[k][0],moves[k][1],moves[k][2],moves[k][3]);
+        }
+    #endif
+  
+  //send to slave
+  Wire.begin();        //join i2c bus
+  Serial.begin(9600);
+  //Wire.beginTransmission(8);  //transmit to device #4
+  Serial.println("\nMaster transmits moves to slave");
+  
+  for(int i = 0; i<16; i++){
+      Wire.beginTransmission(8);  //transmit to device #4
+      Wire.write(moves[i][0]);
+      Wire.write(moves[i][1]);
+      Wire.write(moves[i][2]);
+      Wire.write(moves[i][3]);
+      Wire.endTransmission();
+      Serial.print(moves[i][0]);
+      Serial.print(moves[i][1]);
+      Serial.print(moves[i][2]);
+      Serial.print(moves[i][3]);
+      Serial.println();
+  }
+  Serial.println("\nTransmission ended");
+}
+
+int SpeechHandler(struct Game *p){
+  int index;
+   Wire.requestFrom(8,1);    //request 1 bytes from slave device #8
+  if(Wire.available()){
+    index = Wire.read();
+    if(index == 0){
+      return 0;
+    }
+    index--;
+    Serial.println("\nIndex received = ");
+    Serial.println(index); 
+    p->x0 = moves[index][0];
+    p->y0 = moves[index][1];
+    p->x1 = moves[index][2];
+    p->y1 = moves[index][3];
+    return 1;
+  }else{
+    return 0;
+  }
+  
 }

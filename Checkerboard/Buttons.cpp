@@ -54,6 +54,7 @@ void keystroke(int row, int col, int coordNum, struct Game *p) {
 
 int pressHandler(int coordNum, struct Game *p) {
   if(true) {
+    //Serial.println("\n Running Press Handler");
     //count = 0;
     
     /*The following code is meant to be used to 
@@ -161,6 +162,7 @@ int pressHandler(int coordNum, struct Game *p) {
             break;
         }
         if(digitalRead(pinButtonTest) == LOW){
+          Serial.println("\n Found Button Press");
           keystroke(row, col, coordNum, p);
           //Delay after a button is pressed
           int startTime = millis();
