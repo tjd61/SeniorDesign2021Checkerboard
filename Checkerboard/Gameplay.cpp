@@ -432,7 +432,7 @@ void PrintBoard(struct Game *p){
         //Serial.print("\n----------------------\n\n");
     
     #else
-       // showLedArray(p);
+       showLedArray(p);
     #endif
 }
 
